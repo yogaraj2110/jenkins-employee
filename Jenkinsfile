@@ -1,21 +1,26 @@
 pipeline {
     agent any
+
+    environment {
+        ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#$%&*()"
+        REFRESH_TOKEN = "abcd1234efgh5678!@#$%&*()ABCD1234EFGH"
+    }
+
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Deploy Services') {
+
+        stage('Build and Run Containers') {
             steps {
                 script {
-                    sh 'docker-compose -f docker-compose.yml up -d'
+                    // Running Docker Compose with the environment variables
+                    sh """
+                    docker-compose -f docker-compose.yml up -d
+                    """
                 }
-            }
-        }
-        stage('Post-Deployment') {
-            steps {
-                echo 'All services are deployed and running!'
             }
         }
     }
