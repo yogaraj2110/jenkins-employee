@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  employeefrontend:
+    build:
+      context: https://github.com/yogaraj2110/ecommerce-frontend-portal.git
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_BASE_URL: http://10.0.0.98:8000
+      NEXT_PUBLIC_SECRET_KEY: bf3c199c2470cb477d907b1e0917c17b
+      NEXT_PUBLIC_SECRET_IV: 5183666c72eec9e4
+      NEXT_PUBLIC_ECNRYPTION_METHOD: aes-256-cbc
+
+  employeebackend:
+    build:
+      context: https://github.com/yogaraj2110/ecommerce-backend-portal.git
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DB_CONNECTION: mongodb://10.0.0.98:27017
+      PORT: 8000
+      CORS_ALLOW_ORIGIN: http://localhost:3000
+      DB_NAME: employee
+      ACCESS_TOKEN: ABCD1234EFGHabcd1234efgh5678!@#$%&*()
+      REFRESH_TOKEN: abcd1234efgh5678!@#$%&*()ABCD1234EFGH
+      ACCESS_TOKEN_EXPIRY: 1d
+      REFRESH_TOKEN_EXPIRY: 1d
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+
