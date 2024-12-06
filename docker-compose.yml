@@ -24,10 +24,10 @@ services:
       PORT: 8000
       CORS_ALLOW_ORIGIN: http://localhost:3000
       DB_NAME: employee
-      ACCESS_TOKEN: "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
-      REFRESH_TOKEN: "abcd1234efgh5678!@#\$%&*()ABCD1234EFGH"
-      ACCESS_TOKEN_EXPIRY: "1d"
-      REFRESH_TOKEN_EXPIRY: "1d"
+      ACCESS_TOKEN: 'ABCD1234EFGHabcd1234efgh5678!@#$%&*()'
+      REFRESH_TOKEN: 'abcd1234efgh5678!@#$%&*()ABCD1234EFGH'
+      ACCESS_TOKEN_EXPIRY: '1d'
+      REFRESH_TOKEN_EXPIRY: '1d'
     depends_on:
       - mongodb
 
