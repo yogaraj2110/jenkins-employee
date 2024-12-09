@@ -29,6 +29,28 @@ pipeline {
             }
         }
 
+        stage('Wait for SonarQube to be Ready') {
+            steps {
+                script {
+                    // Wait until SonarQube is accessible
+                    def maxRetries = 30
+                    def retries = 0
+                    while (retries < maxRetries) {
+                        try {
+                            sh "curl -s http://localhost:9000/api/system/ping"
+                            break // If the ping is successful, exit the loop
+                        } catch (Exception e) {
+                            retries++
+                            if (retries == maxRetries) {
+                                error "SonarQube server not ready after ${maxRetries} attempts"
+                            }
+                            sleep 10 // Wait for 10 seconds before retrying
+                        }
+                    }
+                }
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -45,6 +67,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Build and Run Containers') {
             steps {
