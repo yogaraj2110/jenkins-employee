@@ -4,6 +4,8 @@ pipeline {
     environment {
         ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
         REFRESH_TOKEN = "abcd1234efgh5678!@#\$%&*()ABCD1234EFGH"
+        SONAR_HOST_URL = 'http://localhost:9000'
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
     }
 
     stages {
@@ -15,7 +17,7 @@ pipeline {
         stage('Start SonarQube Server') {
             steps {
                 script {
-                    // Start SonarQube in Docker (if not already running)
+                    // Start SonarQube in Docker
                     sh """
                     docker run -d -p 9000:9000 --name sonarqube sonarqube
                     """
