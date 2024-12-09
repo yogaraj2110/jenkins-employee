@@ -5,7 +5,7 @@ pipeline {
         ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
         REFRESH_TOKEN = "abcd1234efgh5678!@#\$%&*()ABCD1234EFGH"
         SONAR_HOST_URL = 'http://localhost:9000'
-       // SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
     }
 
     stages {
