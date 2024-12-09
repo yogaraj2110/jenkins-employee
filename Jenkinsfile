@@ -12,6 +12,17 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Start SonarQube Server') {
+            steps {
+                script {
+                    // Start SonarQube in Docker (if not already running)
+                    sh """
+                    docker run -d -p 9000:9000 --name sonarqube sonarqube
+                    """
+                }
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
