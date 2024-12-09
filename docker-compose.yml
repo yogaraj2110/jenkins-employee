@@ -12,6 +12,8 @@ services:
       NEXT_PUBLIC_SECRET_KEY: bf3c199c2470cb477d907b1e0917c17b
       NEXT_PUBLIC_SECRET_IV: 5183666c72eec9e4
       NEXT_PUBLIC_ECNRYPTION_METHOD: aes-256-cbc
+      SONAR_HOST_URL: 'http://localhost:9000'
+      SONAR_AUTH_TOKEN: credentials('sonarqube-token-id')
 
   employeebackend:
     build:
