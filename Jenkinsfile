@@ -18,33 +18,33 @@ pipeline {
                 checkout scm
             }
         }
-        // stage('Start SonarQube Server') {
-        //     steps {
-        //         script {
-        //             // Start SonarQube in Docker
-        //             sh """
-        //             docker run -d -p 9000:9000 --name sonarqube sonarqube
-        //             """
-        //         }
-        //     }
-        // }
+        stage('Start SonarQube Server') {
+            steps {
+                script {
+                    // Start SonarQube in Docker
+                    sh """
+                    docker run -d -p 9000:9000 --name sonarqube sonarqube
+                    """
+                }
+            }
+        }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script {
-        //             // Run SonarScanner using Docker
-        //             sh """
-        //             docker run --rm \
-        //               -v \$(pwd):/usr/src \
-        //               sonarsource/sonar-scanner-cli \
-        //               -Dsonar.projectKey=ecommerce-portal \
-        //               -Dsonar.sources=. \
-        //               -Dsonar.host.url=${env.SONAR_HOST_URL} \
-        //               -Dsonar.login=${env.SONAR_AUTH_TOKEN}
-        //             """
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarScanner using Docker
+                    sh """
+                    docker run --rm \
+                      -v \$(pwd):/usr/src \
+                      sonarsource/sonar-scanner-cli \
+                      -Dsonar.projectKey=ecommerce-portal \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                      -Dsonar.login=${env.SONAR_AUTH_TOKEN}
+                    """
+                }
+            }
+        }
 
         stage('Build and Run Containers') {
             steps {
