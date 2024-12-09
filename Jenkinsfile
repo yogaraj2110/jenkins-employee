@@ -35,7 +35,7 @@ pipeline {
                     // Run SonarScanner using Docker
                     sh """
                     docker run --rm \
-                      -v \$(pwd):/usr/src \
+                      -v /var/lib/jenkins/workspace/employee\ management:/usr/src \
                       sonarsource/sonar-scanner-cli \
                       -Dsonar.projectKey=ecommerce-portal \
                       -Dsonar.sources=. \
