@@ -1,8 +1,8 @@
 pipeline {
     agent any
-    
+
     tools {
-        git 'git'  // Specify the Git tool you configured in Jenkins
+        git 'git'  // Specify the Git tool configured in Jenkins
     }
 
     environment {
@@ -18,10 +18,11 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Start SonarQube Server') {
             steps {
                 script {
-                    // Start SonarQube in Docker
+                    // Start SonarQube using Docker
                     sh """
                     docker run -d -p 9000:9000 --name sonarqube sonarqube
                     """
@@ -32,8 +33,8 @@ pipeline {
         stage('Wait for SonarQube to be Ready') {
             steps {
                 script {
-                    // Wait until SonarQube is accessible
-                    def maxRetries = 10
+                    // Poll until SonarQube is accessible
+                    def maxRetries = 30
                     def retries = 0
                     def sonarReady = false
 
@@ -61,10 +62,22 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Run SonarScanner using Docker
+                    // Run SonarScanner with Docker
                     sh """
                     docker run --rm \
                       -v "${env.WORKSPACE}:/usr/src" \
@@ -78,7 +91,13 @@ pipeline {
             }
         }
 
-
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build and Run Containers') {
             steps {
@@ -89,6 +108,19 @@ pipeline {
                     """
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning up Docker containers..."
+            sh "docker rm -f sonarqube || true"
+        }
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline failed!"
         }
     }
 }
