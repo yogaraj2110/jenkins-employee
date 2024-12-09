@@ -33,23 +33,27 @@ pipeline {
             steps {
                 script {
                     // Wait until SonarQube is accessible
-                    def maxRetries = 30
+                    def maxRetries = 10
                     def retries = 0
                     def sonarReady = false
+
                     while (retries < maxRetries) {
-                        try {
-                            // Check SonarQube status
-                            def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000/api/system/ping", returnStdout: true).trim()
-                            if (response == "200") {
-                                sonarReady = true
-                                break
-                            }
-                        } catch (Exception e) {
-                            retries++
-                            echo "SonarQube not ready, retrying... (${retries}/${maxRetries})"
+                        def response = sh(
+                            script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000/api/system/ping",
+                            returnStatus: true
+                        )
+
+                        if (response == 0) {
+                            echo "SonarQube is ready!"
+                            sonarReady = true
+                            break
                         }
+
+                        echo "SonarQube not ready, retrying... (${retries + 1}/${maxRetries})"
+                        retries++
                         sleep 10 // Wait for 10 seconds before retrying
                     }
+
                     if (!sonarReady) {
                         error "SonarQube server not ready after ${maxRetries} attempts"
                     }
@@ -57,14 +61,13 @@ pipeline {
             }
         }
 
-
         stage('SonarQube Analysis') {
             steps {
                 script {
                     // Run SonarScanner using Docker
                     sh """
                     docker run --rm \
-                      -v "/var/lib/jenkins/workspace/employee management:/usr/src" \
+                      -v "${env.WORKSPACE}:/usr/src" \
                       sonarsource/sonar-scanner-cli \
                       -Dsonar.projectKey=ecommerce-portal \
                       -Dsonar.sources=. \
@@ -74,6 +77,7 @@ pipeline {
                 }
             }
         }
+
 
 
         stage('Build and Run Containers') {
