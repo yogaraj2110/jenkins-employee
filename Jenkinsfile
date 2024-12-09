@@ -15,16 +15,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Run SonarScanner
-                    withSonarQubeEnv('SonarQube') { // 'SonarQube' is the name you configured in Jenkins SonarQube settings
-                        sh """
-                        sonar-scanner \
-                          -Dsonar.projectKey=ecommerce-portal \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                          -Dsonar.login=${env.SONAR_AUTH_TOKEN}
-                        """
-                    }
+                    // Run SonarScanner using Docker
+                    sh """
+                    docker run --rm \
+                      -v \$(pwd):/usr/src \
+                      sonarsource/sonar-scanner-cli \
+                      -Dsonar.projectKey=ecommerce-portal \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                      -Dsonar.login=${env.SONAR_AUTH_TOKEN}
+                    """
                 }
             }
         }
