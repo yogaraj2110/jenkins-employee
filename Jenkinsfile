@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    
+    tools {
+        git 'git'  // Specify the Git tool you configured in Jenkins
+    }
 
     environment {
         ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
