@@ -35,21 +35,28 @@ pipeline {
                     // Wait until SonarQube is accessible
                     def maxRetries = 30
                     def retries = 0
+                    def sonarReady = false
                     while (retries < maxRetries) {
                         try {
-                            sh "curl -s http://localhost:9000/api/system/ping"
-                            break // If the ping is successful, exit the loop
+                            // Check SonarQube status
+                            def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000/api/system/ping", returnStdout: true).trim()
+                            if (response == "200") {
+                                sonarReady = true
+                                break
+                            }
                         } catch (Exception e) {
                             retries++
-                            if (retries == maxRetries) {
-                                error "SonarQube server not ready after ${maxRetries} attempts"
-                            }
-                            sleep 10 // Wait for 10 seconds before retrying
+                            echo "SonarQube not ready, retrying... (${retries}/${maxRetries})"
                         }
+                        sleep 10 // Wait for 10 seconds before retrying
+                    }
+                    if (!sonarReady) {
+                        error "SonarQube server not ready after ${maxRetries} attempts"
                     }
                 }
             }
         }
+
 
         stage('SonarQube Analysis') {
             steps {
