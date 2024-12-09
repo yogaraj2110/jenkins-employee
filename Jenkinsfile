@@ -12,6 +12,22 @@ pipeline {
                 checkout scm
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarScanner
+                    withSonarQubeEnv('SonarQube') { // 'SonarQube' is the name you configured in Jenkins SonarQube settings
+                        sh """
+                        sonar-scanner \
+                          -Dsonar.projectKey=ecommerce-portal \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                          -Dsonar.login=${env.SONAR_AUTH_TOKEN}
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Build and Run Containers') {
             steps {
