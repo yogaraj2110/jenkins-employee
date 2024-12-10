@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        sonarScanner 'SonarQube Scanner'
         git 'Default'  // Replace with the Git tool's configured name
     }
 
