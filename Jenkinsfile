@@ -21,22 +21,24 @@ pipeline {
         stage('Start SonarQube Server') {
             steps {
                 script {
-                    // Check if the SonarQube container exists
                     def sonarqubeContainer = sh(script: "docker ps -aq -f name=sonarqube", returnStdout: true).trim()
-
                     if (sonarqubeContainer) {
-                        // Start the existing container if it is stopped
-                        sh "docker start sonarqube || true"
-                    } else {
-                        // Run a new container with persistent volumes
+                        echo "SonarQube container already exists: $sonarqubeContainer"
+                        // Stop and remove the existing container to avoid conflicts
                         sh """
-                        docker run -d -p 9000:9000 --name sonarqube \
-                        -v sonarqube_data:/opt/sonarqube/data \
-                        -v sonarqube_logs:/opt/sonarqube/logs \
-                        -v sonarqube_extensions:/opt/sonarqube/extensions \
-                        sonarqube
+                        docker stop $sonarqubeContainer || true
+                        docker rm $sonarqubeContainer || true
                         """
                     }
+                    // Run a new SonarQube container
+                    sh """
+                    docker run -d --name sonarqube \
+                    -p 9000:9000 \
+                    -v sonarqube_data:/opt/sonarqube/data \
+                    -v sonarqube_logs:/opt/sonarqube/logs \
+                    -v sonarqube_extensions:/opt/sonarqube/extensions \
+                    sonarqube:latest
+                    """
                 }
             }
         }
