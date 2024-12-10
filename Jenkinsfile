@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-  
-
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token') // Use the Jenkins credentials plugin
@@ -39,7 +37,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarQube') {
+                    withSonarQubeEnv('SonarQube') { // Name of the SonarQube server in Jenkins configuration
                         sh '''
                         sonar-scanner \
                         -Dsonar.projectKey=employee-project \
