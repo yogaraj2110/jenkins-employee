@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    tools {
-        git 'git'  // Use the name configured in Global Tool Configuration
-        sonarScanner 'SonarQube Scanner'
-    }
+  
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
