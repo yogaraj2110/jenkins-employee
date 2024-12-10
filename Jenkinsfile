@@ -9,7 +9,7 @@ pipeline {
         ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
         REFRESH_TOKEN = "abcd1234efgh5678!@#\$%&*()ABCD1234EFGH"
         SONAR_HOST_URL = 'http://localhost:9000'
-        SONAR_AUTH_TOKEN = credentials('sonarqube-token')
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token') // Use Jenkins credentials plugin
     }
 
     stages {
@@ -41,7 +41,6 @@ pipeline {
             }
         }
 
-
         stage('Build and Run Containers') {
             steps {
                 script {
@@ -52,16 +51,17 @@ pipeline {
                 }
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
                         sh """
-                        sonar-scanner \
+                        ./sonar-scanner/bin/sonar-scanner \
                         -Dsonar.projectKey=your_project_key \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_AUTH_TOKEN
+                        -Dsonar.login=${env.SONAR_AUTH_TOKEN}
                         """
                     }
                 }
