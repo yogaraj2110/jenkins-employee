@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    tools {
+    tools 
+        sonarScanner 'SonarQube Scanner'
         git 'Default'  // Replace with the Git tool's configured name
-        hudson.plugins.sonar.SonarRunnerInstallation 'SonarQube Scanner' // Replace with the configured name
     }
 
     environment {
