@@ -21,11 +21,11 @@ pipeline {
         stage('Start SonarQube Server') {
             steps {
                 script {
-                    // Check if the SonarQube container already exists
+                    // Check if the SonarQube container exists
                     def sonarqubeContainer = sh(script: "docker ps -aq -f name=sonarqube", returnStdout: true).trim()
-        
+
                     if (sonarqubeContainer) {
-                        // Start the existing container if it's stopped
+                        // Start the existing container if it is stopped
                         sh "docker start sonarqube || true"
                     } else {
                         // Run a new container with persistent volumes
@@ -51,6 +51,32 @@ pipeline {
                     """
                 }
             }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                        sonar-scanner \
+                        -Dsonar.projectKey=your_project_key \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN
+                        """
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo "Pipeline execution complete."
+        }
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check logs for details."
         }
     }
 }
