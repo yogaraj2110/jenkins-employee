@@ -54,21 +54,21 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script {
-        //             withSonarQubeEnv('SonarQube') {
-        //                 sh """
-        //                 ./sonar-scanner/bin/sonar-scanner \
-        //                 -Dsonar.projectKey=your_project_key \
-        //                 -Dsonar.sources=. \
-        //                 -Dsonar.host.url=$SONAR_HOST_URL \
-        //                 -Dsonar.login=${env.SONAR_AUTH_TOKEN}
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                        ./sonar-scanner/bin/sonar-scanner \
+                        -Dsonar.projectKey=employee-project \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=${env.SONAR_AUTH_TOKEN}
+                        """
+                    }
+                }
+            }
+        }
     }
     post {
         always {
