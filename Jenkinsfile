@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        sonar 'SonarQube Scanner'  // Change to "sonar" instead of "sonarScanner"
-    }
-
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token')
@@ -41,7 +37,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarQube') {
+                    withSonarQubeEnv('sonarqube') {
                         sh '''
                         sonar-scanner \
                         -Dsonar.projectKey=employee-project \
