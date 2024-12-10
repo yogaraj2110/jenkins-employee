@@ -3,6 +3,7 @@ pipeline {
     
     tools {
         git 'git'  // Specify the Git tool you configured in Jenkins
+        sonarScanner 'SonarQube Scanner'
     }
 
     environment {
@@ -58,13 +59,16 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
-                        // Use the SonarQube scanner installed in Jenkins
                         sh """
-                        sonar-scanner \
+                        docker run --rm \
+                        -e SONAR_HOST_URL=$SONAR_HOST_URL \
+                        -e SONAR_AUTH_TOKEN=$SONAR_AUTH_TOKEN \
+                        -v $(pwd):/usr/src \
+                        sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=employee-project \
-                        -Dsonar.sources=. \
+                        -Dsonar.sources=/usr/src \
                         -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=${env.SONAR_AUTH_TOKEN}
+                        -Dsonar.login=$SONAR_AUTH_TOKEN
                         """
                     }
                 }
