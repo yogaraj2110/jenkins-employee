@@ -1,16 +1,14 @@
 pipeline {
     agent any
-    
+
     tools {
-        git 'git'
-        sonarScanner 'SonarQube Scanner'
+        git 'Default'  // Replace with the Git tool's configured name
+        hudson.plugins.sonar.SonarRunnerInstallation 'SonarQube Scanner' // Replace with the configured name
     }
 
     environment {
-        ACCESS_TOKEN = "ABCD1234EFGHabcd1234efgh5678!@#\$%&*()"
-        REFRESH_TOKEN = "abcd1234efgh5678!@#\$%&*()ABCD1234EFGH"
         SONAR_HOST_URL = 'http://localhost:9000'
-        SONAR_AUTH_TOKEN = credentials('sonarqube-token')
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token') // Use the Jenkins credentials plugin
     }
 
     stages {
@@ -41,27 +39,14 @@ pipeline {
                 }
             }
         }
-        stage('Build and Run Containers') {
-            steps {
-                script {
-                    sh """
-                    docker-compose -f docker-compose.yml up -d
-                    """
-                }
-            }
-        }
         stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
                         sh '''
-                        docker run --rm \
-                        -e SONAR_HOST_URL=$SONAR_HOST_URL \
-                        -e SONAR_AUTH_TOKEN=$SONAR_AUTH_TOKEN \
-                        -v $(pwd):/usr/src \
-                        sonarsource/sonar-scanner-cli \
+                        sonar-scanner \
                         -Dsonar.projectKey=employee-project \
-                        -Dsonar.sources=/usr/src \
+                        -Dsonar.sources=. \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_AUTH_TOKEN
                         '''
@@ -70,6 +55,7 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             echo "Pipeline execution complete."
