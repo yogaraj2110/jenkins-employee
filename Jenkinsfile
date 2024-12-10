@@ -60,7 +60,6 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         // Set the secret as an environment variable
                         withEnv(["SONAR_AUTH_TOKEN=${env.SONAR_AUTH_TOKEN}"]) {
-                            tool name: 'SonarQube Scanner', type: 'SonarQubeScanner'
                             sh """
                                 sonar-scanner \
                                 -Dsonar.projectKey=employee-project \
