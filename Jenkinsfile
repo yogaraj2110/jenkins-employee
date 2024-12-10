@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
-                        sh """
+                        sh '''
                         docker run --rm \
                         -e SONAR_HOST_URL=$SONAR_HOST_URL \
                         -e SONAR_AUTH_TOKEN=$SONAR_AUTH_TOKEN \
@@ -69,7 +69,7 @@ pipeline {
                         -Dsonar.sources=/usr/src \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_AUTH_TOKEN
-                        """
+                        '''
                     }
                 }
             }
