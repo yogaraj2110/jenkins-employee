@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         git 'git'  // Use the name configured in Global Tool Configuration
+        sonarScanner 'SonarQube Scanner'
     }
 
     environment {
