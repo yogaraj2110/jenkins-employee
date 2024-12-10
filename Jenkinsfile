@@ -3,7 +3,7 @@ pipeline {
     
     tools {
         git 'git'  // Specify the Git tool you configured in Jenkins
-        sonar 'SonarQube Scanner' 
+        sonarQubeScanner 'SonarQube Scanner' 
     }
 
     environment {
