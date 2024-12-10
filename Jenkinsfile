@@ -3,7 +3,6 @@ pipeline {
     
     tools {
         git 'git'  // Specify the Git tool you configured in Jenkins
-        sonarQubeScanner 'SonarQube Scanner' 
     }
 
     environment {
@@ -59,13 +58,14 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
+                        // Set the secret as an environment variable
                         withEnv(["SONAR_AUTH_TOKEN=${env.SONAR_AUTH_TOKEN}"]) {
                             sh """
-                            sonar-scanner \
-                            -Dsonar.projectKey=employee-project \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=$SONAR_HOST_URL \
-                            -Dsonar.login=$SONAR_AUTH_TOKEN
+                                sonar-scanner \
+                                -Dsonar.projectKey=employee-project \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=$SONAR_HOST_URL \
+                                -Dsonar.login=$SONAR_AUTH_TOKEN
                             """
                         }
                     }
