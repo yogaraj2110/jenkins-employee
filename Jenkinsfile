@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        git 'Default'  // Replace with the Git tool's configured name
+        git 'git'  // Use the name configured in Global Tool Configuration
     }
 
     environment {
